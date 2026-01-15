@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:shopeazy/home_screen.dart';
 
 class StoreScreen extends StatefulWidget {
@@ -9,6 +12,20 @@ class StoreScreen extends StatefulWidget {
 }
 
 class _StoreScreenState extends State<StoreScreen> {
+  final List<Map> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    Uri uri = Uri.parse("https://fakestoreapi.com/products");
+    get(uri).then((productsResponse) {
+      debugPrint("productsResponse.body: ${productsResponse.body}");
+      final data = jsonDecode(productsResponse.body) as List;
+      debugPrint("data.runtimeType: ${data.runtimeType}");
+      _products.addAll(data.map((item) => item as Map));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
