@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:shopeazy/home_screen.dart';
@@ -36,6 +37,13 @@ class _StoreScreenState extends State<StoreScreen> {
       appBar: appBar(),
       body: Column(
         children: [
+          Text("Search Bar"),
+          CarouselSlider(
+            items: _products.map((item) {
+              return Text(item["title"]);
+            }).toList(),
+            options: CarouselOptions(),
+          ),
           Text("Store Screen"),
           TextButton(
             onPressed: () {
