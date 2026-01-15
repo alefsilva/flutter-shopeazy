@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:shopeazy/home_screen.dart';
 
-class StoreScreen extends StatelessWidget {
+class StoreScreen extends StatefulWidget {
   const StoreScreen({super.key});
 
+  @override
+  State<StoreScreen> createState() => _StoreScreenState();
+}
+
+class _StoreScreenState extends State<StoreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
