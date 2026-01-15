@@ -14,7 +14,7 @@ class StoreScreen extends StatefulWidget {
 
 class _StoreScreenState extends State<StoreScreen> {
   final List<Map> _products = [];
-  final int _cartLength = 0;
+  final List<int> _cartItems = [];
 
   @override
   void initState() {
@@ -39,7 +39,6 @@ class _StoreScreenState extends State<StoreScreen> {
         children: [
           Text("Search Bar"),
           carouselSlider(),
-          Text("Store Screen"),
           TextButton(
             onPressed: () {
               debugPrint("Back to home");
@@ -145,7 +144,17 @@ class _StoreScreenState extends State<StoreScreen> {
                       ),
                       SizedBox(width: 12.0),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          setState(() {
+                            debugPrint("card shopping_cart_rounded tapped");
+                            int id = item["id"];
+                            if (_cartItems.contains(id)) {
+                              _cartItems.remove(id);
+                            } else {
+                              _cartItems.add(id);
+                            }
+                          });
+                        },
                         child: Container(
                           padding: EdgeInsets.all(4.0),
                           decoration: BoxDecoration(
@@ -153,7 +162,9 @@ class _StoreScreenState extends State<StoreScreen> {
                             color: Colors.orange.shade50,
                           ),
                           child: Icon(
-                            Icons.shopping_cart_rounded,
+                            _cartItems.contains(item["id"])
+                                ? Icons.remove_shopping_cart_rounded
+                                : Icons.shopping_cart_rounded,
                             size: 20.0,
                             color: Colors.orange,
                           ),
@@ -196,8 +207,10 @@ class _StoreScreenState extends State<StoreScreen> {
         Stack(
           children: [
             IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.shopping_cart_rounded),
+              onPressed: () {
+                debugPrint("shopping_cart_checkout_rounded pressed");
+              },
+              icon: Icon(Icons.shopping_cart_checkout_rounded),
             ),
             Positioned(
               top: 5.0,
@@ -210,7 +223,7 @@ class _StoreScreenState extends State<StoreScreen> {
                 // padding: EdgeInsets.only(top: 38.0, left: 38.0),
                 padding: EdgeInsets.all(8.0),
                 child: Text(
-                  "$_cartLength",
+                  _cartItems.length.toString(),
                   style: TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
