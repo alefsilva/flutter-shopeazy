@@ -4,8 +4,10 @@ O **ShopEazy** é uma aplicação de e-commerce moderna desenvolvida em Flutter 
 
 ## 🚀 Demonstração
 
-- **Web:** [Acesse aqui](https://alefsilva.github.io/flutter-shopeazy/)
-- **Android:** [Baixe o APK na aba Releases](https://github.com/alefsilva/flutter-shopeazy/releases)
+<ul>
+  <li><strong>Web:</strong> <a href="https://alefsilva.github.io/flutter-shopeazy/" target="_blank">Acesse aqui</a></li>
+  <li><strong>Android:</strong> <a href="https://github.com/alefsilva/flutter-shopeazy/releases" target="_blank">Baixe o APK na aba Releases</a></li>
+</ul>
 
 ## ✨ Funcionalidades
 
