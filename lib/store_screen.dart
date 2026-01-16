@@ -374,7 +374,7 @@ class _StoreScreenState extends State<StoreScreen> {
             );
           },
           child: Text(
-            "ShopEazy",
+            "shopeazy",
             style: TextStyle(
               fontSize: 24.0,
               fontWeight: FontWeight.bold,
