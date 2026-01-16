@@ -6,11 +6,11 @@ void main() {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(statusBarColor: Colors.black45),
   );
-  runApp(const ShopEzy());
+  runApp(const ShopEazy());
 }
 
-class ShopEzy extends StatelessWidget {
-  const ShopEzy({super.key});
+class ShopEazy extends StatelessWidget {
+  const ShopEazy({super.key});
 
   @override
   Widget build(BuildContext context) {
