@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:shopeazy/home_screen.dart';
 
 class StoreScreen extends StatefulWidget {
   const StoreScreen({super.key});
@@ -75,10 +76,10 @@ class _StoreScreenState extends State<StoreScreen> {
   }
 
   dynamic listWidget() {
-    var items = _products;
-    if (_filteredProducts.isNotEmpty) {
-      items = _filteredProducts;
-    }
+    var items = _filteredProducts.isNotEmpty ? _filteredProducts : _products;
+
+    if (_filteredProducts.isEmpty) return renderEmptyResult();
+
     // return Text("List Widget");
     return Expanded(
       child: ListView(
@@ -186,76 +187,99 @@ class _StoreScreenState extends State<StoreScreen> {
 
   CarouselSlider carouselSlider() {
     if (_filteredProducts.isEmpty) {
-      return CarouselSlider(
-        items: [Center(child: Text("Nenhum produto encontrado."))],
-        options: CarouselOptions(),
-      );
+      return renderEmptyResult();
     }
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool isTablet = screenWidth >= 600;
+    bool isDesktop = screenWidth >= 1024;
+    double viewPort = isDesktop
+        ? 0.2
+        : isTablet
+        ? 0.45
+        : 0.8;
+
     return CarouselSlider(
       key: ValueKey(_filteredProducts.length),
       items: _filteredProducts.map((item) {
         return Padding(
           key: ValueKey(item["id"]),
           padding: EdgeInsets.all(8.0),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade300,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 20.0,
-              ),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: productRating(item),
-                  ),
-                  Spacer(),
-                  Image.network(item["image"], height: 200.00),
-                  Spacer(),
-                  SizedBox(height: 12.0),
-                  Text(
-                    maxLines: 2,
-                    item["title"],
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 300),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 8.0,
+                      offset: Offset(0, 3),
                     ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 20.0,
                   ),
-                  SizedBox(height: 12.0),
-                  Text(
-                    maxLines: 3,
-                    item["description"],
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: productRating(item),
+                      ),
+                      Spacer(),
+                      Image.network(item["image"], height: 200.00),
+                      Spacer(),
+                      SizedBox(height: 12.0),
+                      Text(
+                        maxLines: 2,
+                        item["title"],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 12.0),
+                      Text(
+                        maxLines: 3,
+                        item["description"],
+                        style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                      ),
+                      SizedBox(height: 12.0),
+                      addCardButton(item),
+                    ],
                   ),
-                  SizedBox(height: 12.0),
-                  addCardButton(item),
-                ],
+                ),
               ),
             ),
           ),
         );
       }).toList(),
       options: CarouselOptions(
-        height: 480,
-        enlargeCenterPage: true,
+        height: isDesktop
+            ? 460
+            : isTablet
+            ? 550
+            : 480,
+        viewportFraction: viewPort,
+        enlargeCenterPage: !isDesktop,
         enlargeFactor: 0.25,
         enableInfiniteScroll: _filteredProducts.length > 1,
         autoPlay: true,
         autoPlayAnimationDuration: Duration(seconds: 2),
       ),
+    );
+  }
+
+  CarouselSlider renderEmptyResult() {
+    return CarouselSlider(
+      items: [Text("Nenhum produto encontrado.")],
+      options: CarouselOptions(),
     );
   }
 
@@ -342,17 +366,26 @@ class _StoreScreenState extends State<StoreScreen> {
       elevation: 0.0,
       iconTheme: IconThemeData(color: Color(0xffC8B893)),
       title: Center(
-        child: Text(
-          "ShopEazy",
-          style: TextStyle(
-            fontSize: 24.0,
-            fontWeight: FontWeight.bold,
-            color: Color(0xffc8b893),
+        child: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => HomeScreen()),
+            );
+          },
+          child: Text(
+            "ShopEazy",
+            style: TextStyle(
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+              color: Color(0xffc8b893),
+            ),
           ),
         ),
       ),
       actions: [
         Stack(
+          clipBehavior: Clip.none,
           children: [
             IconButton(
               onPressed: () {
@@ -361,12 +394,14 @@ class _StoreScreenState extends State<StoreScreen> {
               icon: Icon(Icons.shopping_cart_checkout_rounded),
             ),
             Positioned(
-              top: 5.0,
-              right: 5.0,
+              top: 0,
+              right: 28.0,
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
+                  color: _cartItems.length >= 1
+                      ? Colors.orange.shade400
+                      : Colors.white,
                 ),
                 // padding: EdgeInsets.only(top: 38.0, left: 38.0),
                 padding: EdgeInsets.all(8.0),
@@ -375,7 +410,9 @@ class _StoreScreenState extends State<StoreScreen> {
                   style: TextStyle(
                     fontSize: 12.0,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xffc8b893),
+                    color: _cartItems.length >= 1
+                        ? Colors.black
+                        : Color(0xffc8b893),
                   ),
                 ),
               ),
