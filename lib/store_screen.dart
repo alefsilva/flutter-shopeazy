@@ -75,10 +75,10 @@ class _StoreScreenState extends State<StoreScreen> {
   }
 
   dynamic listWidget() {
-    var items = _products;
-    if (_filteredProducts.isNotEmpty) {
-      items = _filteredProducts;
-    }
+    var items = _filteredProducts.isNotEmpty ? _filteredProducts : _products;
+
+    if (_filteredProducts.isEmpty) return renderEmptyResult();
+
     // return Text("List Widget");
     return Expanded(
       child: ListView(
@@ -186,10 +186,7 @@ class _StoreScreenState extends State<StoreScreen> {
 
   CarouselSlider carouselSlider() {
     if (_filteredProducts.isEmpty) {
-      return CarouselSlider(
-        items: [Center(child: Text("Nenhum produto encontrado."))],
-        options: CarouselOptions(),
-      );
+      return renderEmptyResult();
     }
     return CarouselSlider(
       key: ValueKey(_filteredProducts.length),
@@ -197,52 +194,57 @@ class _StoreScreenState extends State<StoreScreen> {
         return Padding(
           key: ValueKey(item["id"]),
           padding: EdgeInsets.all(8.0),
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.shade300,
-                  blurRadius: 8.0,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 20.0,
-              ),
-              child: Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: productRating(item),
-                  ),
-                  Spacer(),
-                  Image.network(item["image"], height: 200.00),
-                  Spacer(),
-                  SizedBox(height: 12.0),
-                  Text(
-                    maxLines: 2,
-                    item["title"],
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 300),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.shade300,
+                      blurRadius: 8.0,
+                      offset: Offset(0, 3),
                     ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 20.0,
                   ),
-                  SizedBox(height: 12.0),
-                  Text(
-                    maxLines: 3,
-                    item["description"],
-                    style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: productRating(item),
+                      ),
+                      Spacer(),
+                      Image.network(item["image"], height: 200.00),
+                      Spacer(),
+                      SizedBox(height: 12.0),
+                      Text(
+                        maxLines: 2,
+                        item["title"],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 12.0),
+                      Text(
+                        maxLines: 3,
+                        item["description"],
+                        style: TextStyle(fontSize: 12.0, color: Colors.grey),
+                      ),
+                      SizedBox(height: 12.0),
+                      addCardButton(item),
+                    ],
                   ),
-                  SizedBox(height: 12.0),
-                  addCardButton(item),
-                ],
+                ),
               ),
             ),
           ),
@@ -256,6 +258,13 @@ class _StoreScreenState extends State<StoreScreen> {
         autoPlay: true,
         autoPlayAnimationDuration: Duration(seconds: 2),
       ),
+    );
+  }
+
+  CarouselSlider renderEmptyResult() {
+    return CarouselSlider(
+      items: [Center(child: Text("Nenhum produto encontrado."))],
+      options: CarouselOptions(),
     );
   }
 
